@@ -17,6 +17,7 @@
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/order/CustomerOrder.java
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/order/CustomerOrderRepository.java
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/order/OrderLineItem.java
+/Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/order/PaymentMethod.java
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/order/PaymentStatus.java
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/service/AdminService.java
 /Users/naresh/Desktop/PythonMaster/backend/src/main/java/com/tiffincenter/backend/service/MenuService.java

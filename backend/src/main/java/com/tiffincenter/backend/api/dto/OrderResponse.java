@@ -8,6 +8,7 @@ public record OrderResponse(
     Long orderId,
     String customerName,
     String phoneNumber,
+    String paymentMethod,
     String paymentStatus,
     BigDecimal totalAmount,
     LocalDateTime createdAt,

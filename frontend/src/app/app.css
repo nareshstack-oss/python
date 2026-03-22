@@ -1,12 +1,25 @@
 :host {
   display: block;
   min-height: 100vh;
+  position: relative;
   background:
-    radial-gradient(circle at top left, rgba(205, 109, 41, 0.15), transparent 24%),
-    radial-gradient(circle at top right, rgba(61, 104, 78, 0.15), transparent 24%),
-    linear-gradient(180deg, #fff7eb, #f6efe3);
-  color: #1e1a16;
-  font-family: "Segoe UI", sans-serif;
+    radial-gradient(circle at top left, rgba(224, 120, 47, 0.22), transparent 30%),
+    radial-gradient(circle at 80% 12%, rgba(28, 100, 73, 0.18), transparent 20%),
+    linear-gradient(180deg, #f7eddc 0%, #efe4cf 48%, #e8dcc7 100%);
+  color: #211814;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+}
+
+:host::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(89, 64, 45, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(89, 64, 45, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 85%);
+  pointer-events: none;
 }
 
 .shell-header {
@@ -14,7 +27,29 @@
   justify-content: space-between;
   align-items: end;
   gap: 24px;
-  padding: 32px 40px 20px;
+  padding: 28px 40px 18px;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand-seal {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, #1e5c48, #2f7d63 45%, #d77334 100%);
+  color: #fff7ea;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 22px 40px rgba(52, 38, 24, 0.18);
 }
 
 .eyebrow {
@@ -28,8 +63,10 @@
 
 h1 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 0.95;
+  max-width: 780px;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 0.94;
 }
 
 nav {
@@ -39,18 +76,20 @@ nav {
 }
 
 nav a {
-  padding: 12px 18px;
+  padding: 12px 20px;
   border-radius: 999px;
   color: #4a4037;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(120, 93, 71, 0.15);
-  font-weight: 600;
+  background: rgba(255, 251, 245, 0.75);
+  border: 1px solid rgba(95, 72, 53, 0.14);
+  backdrop-filter: blur(8px);
+  font-weight: 700;
 }
 
 nav a.active {
   color: white;
-  background: #bf5e27;
+  background: linear-gradient(135deg, #195844, #cb6427);
+  box-shadow: 0 12px 24px rgba(33, 24, 16, 0.14);
 }
 
 .shell-main {
@@ -67,5 +106,9 @@ nav a.active {
   .shell-header {
     align-items: start;
     flex-direction: column;
+  }
+
+  .brand-lockup {
+    align-items: flex-start;
   }
 }

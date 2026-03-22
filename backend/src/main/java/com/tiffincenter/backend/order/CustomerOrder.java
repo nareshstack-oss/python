@@ -24,6 +24,8 @@ public class CustomerOrder {
     private BigDecimal totalAmount;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -67,6 +69,14 @@ public class CustomerOrder {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,0 +1,6 @@
+2026-03-22 05:59:05.662225-04:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]FOOD_ITEM FOOD_ITEM"; SQL statement:
+FOOD_ITEM FOOD_ITEM [42000-224]
+2026-03-22 05:59:22.155469-04:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]ORDER_LINE_ITEM"; SQL statement:
+ORDER_LINE_ITEM [42000-224]

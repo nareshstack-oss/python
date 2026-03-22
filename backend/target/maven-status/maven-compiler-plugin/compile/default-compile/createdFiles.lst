@@ -1,4 +1,5 @@
 com/tiffincenter/backend/TiffinCenterApplication.class
+com/tiffincenter/backend/order/PaymentMethod.class
 com/tiffincenter/backend/api/OrderController.class
 com/tiffincenter/backend/order/PaymentStatus.class
 com/tiffincenter/backend/menu/FoodItemRepository.class

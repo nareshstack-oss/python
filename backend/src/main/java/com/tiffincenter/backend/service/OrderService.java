@@ -9,6 +9,7 @@ import com.tiffincenter.backend.menu.FoodItemRepository;
 import com.tiffincenter.backend.order.CustomerOrder;
 import com.tiffincenter.backend.order.CustomerOrderRepository;
 import com.tiffincenter.backend.order.OrderLineItem;
+import com.tiffincenter.backend.order.PaymentMethod;
 import com.tiffincenter.backend.order.PaymentStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ public class OrderService {
         CustomerOrder order = new CustomerOrder();
         order.setCustomerName(request.customerName());
         order.setPhoneNumber(request.phoneNumber());
+        order.setPaymentMethod(request.paymentMethod());
         order.setPaymentStatus(request.paymentStatus());
         order.setCreatedAt(LocalDateTime.now());
 
@@ -77,6 +79,12 @@ public class OrderService {
 
         long paidOrders = orders.stream().filter(order -> order.getPaymentStatus() == PaymentStatus.PAID).count();
         long unpaidOrders = orders.size() - paidOrders;
+        Map<String, Long> paymentMethodBreakdown = new LinkedHashMap<>();
+
+        for (PaymentMethod paymentMethod : PaymentMethod.values()) {
+            long count = orders.stream().filter(order -> order.getPaymentMethod() == paymentMethod).count();
+            paymentMethodBreakdown.put(paymentMethod.name(), count);
+        }
 
         Map<String, DailySummaryResponse.ItemSalesSummary> itemSummaryMap = new LinkedHashMap<>();
 
@@ -105,7 +113,7 @@ public class OrderService {
             .sorted(Comparator.comparing(DailySummaryResponse.ItemSalesSummary::quantitySold).reversed())
             .toList();
 
-        return new DailySummaryResponse(orders.size(), totalRevenue, paidOrders, unpaidOrders, topItems);
+        return new DailySummaryResponse(orders.size(), totalRevenue, paidOrders, unpaidOrders, paymentMethodBreakdown, topItems);
     }
 
     private OrderResponse mapOrder(CustomerOrder order) {
@@ -113,6 +121,7 @@ public class OrderService {
             order.getId(),
             order.getCustomerName(),
             order.getPhoneNumber(),
+            order.getPaymentMethod().name(),
             order.getPaymentStatus().name(),
             order.getTotalAmount(),
             order.getCreatedAt(),
