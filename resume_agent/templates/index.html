@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">AI Resume Studio</p>
+        <h1>Turn skill sets and experience into a professional resume with multiple AI agents.</h1>
+        <p class="lede">
+          Enter your profile details once. The app runs an analyst agent, a resume strategist, and a resume writer
+          to generate a refined recruiter-friendly resume draft.
+        </p>
+      </div>
+      <div class="hero-note">
+        <span>Agent Flow</span>
+        <strong>Input Analyst</strong>
+        <strong>Resume Strategist</strong>
+        <strong>Resume Writer</strong>
+      </div>
+    </section>
+
+    <section class="layout">
+      <section class="panel form-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Input</p>
+            <h2>Resume details</h2>
+          </div>
+          <button id="generateBtn" class="primary" type="button">Generate Resume</button>
+        </div>
+
+        <div class="form-grid">
+          <label><span>Full name</span><input id="full_name" placeholder="Naresh Bhukya"></label>
+          <label><span>Phone</span><input id="phone" placeholder="+1 555 000 1234"></label>
+          <label><span>Email</span><input id="email" placeholder="naresh@example.com"></label>
+          <label><span>Location</span><input id="location" placeholder="New York, NY"></label>
+          <label><span>Target role</span><input id="target_role" placeholder="Python Developer"></label>
+          <label><span>Years of experience</span><input id="years_of_experience" placeholder="3 years"></label>
+        </div>
+
+        <label><span>Skills</span><textarea id="skills" rows="5" placeholder="Python, FastAPI, SQL, AWS, REST APIs"></textarea></label>
+        <label><span>Projects</span><textarea id="projects" rows="5" placeholder="Project name, stack, impact"></textarea></label>
+        <label><span>Work experience</span><textarea id="work_experience" rows="6" placeholder="Company, role, responsibilities, achievements"></textarea></label>
+        <label><span>Education</span><textarea id="education" rows="4" placeholder="Degree, college, year"></textarea></label>
+        <label><span>Certifications</span><textarea id="certifications" rows="3" placeholder="Optional certifications"></textarea></label>
+
+        <p id="statusText" class="status">Waiting for profile input.</p>
+      </section>
+
+      <section class="panel output-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Output</p>
+            <h2 id="headline">No resume generated yet</h2>
+          </div>
+          <span class="chip">Markdown</span>
+        </div>
+
+        <p id="summary" class="summary">
+          Fill the form and generate a resume draft tailored to your target role.
+        </p>
+
+        <div class="download-row" id="downloadRow">
+          <a href="/api/download/md" target="_blank" rel="noreferrer">Download MD</a>
+          <a href="/api/download/txt" target="_blank" rel="noreferrer">Download TXT</a>
+          <a href="/api/download/docx" target="_blank" rel="noreferrer">Download DOCX</a>
+          <a href="/api/download/pdf" target="_blank" rel="noreferrer">Download PDF</a>
+        </div>
+
+        <pre id="resumeBox" class="resume-box"></pre>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    async function loadState() {
+      const response = await fetch('/api/state');
+      const data = await response.json();
+      if (data.latest_input) {
+        Object.entries(data.latest_input).forEach(([key, value]) => {
+          const element = document.getElementById(key);
+          if (element) {
+            element.value = value || '';
+          }
+        });
+      }
+      if (data.latest_resume) {
+        renderResume(data.latest_resume);
+      }
+    }
+
+    function collectPayload() {
+      return {
+        full_name: document.getElementById('full_name').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        location: document.getElementById('location').value,
+        target_role: document.getElementById('target_role').value,
+        years_of_experience: document.getElementById('years_of_experience').value,
+        skills: document.getElementById('skills').value,
+        projects: document.getElementById('projects').value,
+        work_experience: document.getElementById('work_experience').value,
+        education: document.getElementById('education').value,
+        certifications: document.getElementById('certifications').value
+      };
+    }
+
+    function renderResume(data) {
+      document.getElementById('headline').textContent = data.headline;
+      document.getElementById('summary').textContent = data.summary;
+      document.getElementById('resumeBox').textContent = data.resume_markdown;
+      document.getElementById('statusText').textContent = `Resume generated at ${new Date(data.generated_at).toLocaleString()}.`;
+      document.getElementById('downloadRow').style.display = 'flex';
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      document.getElementById('statusText').textContent = 'Generating resume...';
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(collectPayload())
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        document.getElementById('statusText').textContent = data.detail || 'Resume generation failed.';
+        return;
+      }
+      renderResume(data);
+    });
+
+    loadState();
+  </script>
+</body>
+</html>

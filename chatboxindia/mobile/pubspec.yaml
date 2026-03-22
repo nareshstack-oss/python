@@ -1,0 +1,17 @@
+name: chatboxindia_mobile
+description: ChatBoxIndia mobile chat app MVP
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  http: ^1.2.2
+  socket_io_client: ^3.0.2
+
+flutter:
+  uses-material-design: true
