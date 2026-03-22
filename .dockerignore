@@ -1,0 +1,24 @@
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache
+.venv
+venv
+env
+dist
+build
+.DS_Store
+*.ipynb
+testDemo
+App1.py
+ClassTest.py
+CustomException.py
+Test1.py
+Test2.py
+app.py
+main.py
+utils.py
+Worksheet in H-1B Port_Work abroad_candidate.xlsx

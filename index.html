@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Recommender</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --panel: #fffdf8;
+      --ink: #1f1c18;
+      --muted: #6e655c;
+      --accent: #c85d2f;
+      --accent-dark: #9f451f;
+      --border: #e8ddd0;
+      --shadow: 0 24px 60px rgba(70, 45, 20, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(200, 93, 47, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(127, 151, 82, 0.2), transparent 30%),
+        linear-gradient(180deg, #f9f5ee 0%, var(--bg) 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(100%, 760px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 40px 40px 24px;
+      background:
+        linear-gradient(135deg, rgba(200, 93, 47, 0.12), transparent 60%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 239, 0.95));
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.95;
+    }
+
+    .subtitle {
+      max-width: 540px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    form {
+      display: grid;
+      gap: 20px;
+      padding: 32px 40px 40px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      font: inherit;
+    }
+
+    input,
+    select {
+      padding: 14px 16px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button {
+      padding: 16px 20px;
+      border: 0;
+      background: linear-gradient(135deg, var(--accent), #d47d34);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, var(--accent-dark), #bb6726);
+    }
+
+    .result {
+      min-height: 76px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      background: #fffaf3;
+    }
+
+    .result-label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .result-value {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .helper {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .error {
+      color: #a12d2d;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section class="hero">
+      <p class="eyebrow">Music Recommender</p>
+      <h1>Get a genre suggestion from your model.</h1>
+      <p class="subtitle">
+        Enter the same features your trained classifier expects. The form posts to the FastAPI
+        backend and shows the predicted recommendation immediately.
+      </p>
+    </section>
+
+    <form id="predict-form">
+      <div class="grid">
+        <div>
+          <label for="age">Age</label>
+          <input id="age" name="age" type="number" min="1" max="120" value="25" required>
+        </div>
+
+        <div>
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="1">Male (1)</option>
+            <option value="0">Female (0)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit">Predict Music Preference</button>
+
+      <section class="result" aria-live="polite">
+        <p class="result-label">Prediction</p>
+        <p id="result" class="result-value">Waiting for input</p>
+        <p id="helper" class="helper">Use the form above, then submit to call <code>/predict</code>.</p>
+      </section>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById("predict-form");
+    const result = document.getElementById("result");
+    const helper = document.getElementById("helper");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const payload = {
+        age: Number(document.getElementById("age").value),
+        gender: Number(document.getElementById("gender").value)
+      };
+
+      result.textContent = "Loading...";
+      helper.textContent = "Request sent to the API.";
+      helper.classList.remove("error");
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail ? JSON.stringify(data.detail) : "Prediction failed");
+        }
+
+        const prediction = Array.isArray(data.prediction) ? data.prediction[0] : data.prediction;
+        result.textContent = prediction;
+        helper.textContent = "Prediction received successfully.";
+      } catch (error) {
+        result.textContent = "Request failed";
+        helper.textContent = error.message;
+        helper.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>
