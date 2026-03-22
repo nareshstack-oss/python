@@ -4,6 +4,9 @@ This workspace now contains a simple full-stack tiffin center application:
 
 - `backend/`: Spring Boot API
 - `frontend/`: Angular UI
+- `resume_agent/`: CrewAI + DeepSeek resume generator app
+- `apartment_agent/`: CrewAI + DeepSeek apartment digest app
+- `chatboxindia/`: Chat app MVP with Node backend and Flutter-ready mobile client
 
 ## Features
 

@@ -4,3 +4,4 @@ __pycache__/
 email_mcp/.env
 email_mcp/secrets/credentials.json
 email_mcp/secrets/token.json
+resume_agent/.env
