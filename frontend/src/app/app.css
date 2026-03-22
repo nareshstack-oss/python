@@ -1,0 +1,71 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(205, 109, 41, 0.15), transparent 24%),
+    radial-gradient(circle at top right, rgba(61, 104, 78, 0.15), transparent 24%),
+    linear-gradient(180deg, #fff7eb, #f6efe3);
+  color: #1e1a16;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.shell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  padding: 32px 40px 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #b25a24;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.95;
+}
+
+nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: #4a4037;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(120, 93, 71, 0.15);
+  font-weight: 600;
+}
+
+nav a.active {
+  color: white;
+  background: #bf5e27;
+}
+
+.shell-main {
+  padding: 0 40px 40px;
+}
+
+@media (max-width: 720px) {
+  .shell-header,
+  .shell-main {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .shell-header {
+    align-items: start;
+    flex-direction: column;
+  }
+}
