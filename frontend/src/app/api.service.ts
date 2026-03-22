@@ -6,7 +6,7 @@ import { AdminLoginResponse, DailySummary, FoodItem, OrderResponse, PlaceOrderRe
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api';
+  private readonly baseUrl = '/api';
 
   getMenu(): Observable<FoodItem[]> {
     return this.http.get<FoodItem[]>(`${this.baseUrl}/menu`);

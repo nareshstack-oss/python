@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: tiffin-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: tiffin-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
