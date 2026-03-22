@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Daily Apartment Agent</p>
+        <h1>Track nearby rentals with a DeepSeek-powered daily digest.</h1>
+        <p class="lede">
+          Configure your location, budget, and preferred listing sites. The app searches Zillow, Apartments.com,
+          and Rent.com, then uses a CrewAI workflow to shortlist apartments and summarize the best options.
+        </p>
+      </div>
+      <div class="hero-note">
+        <span>Sources</span>
+        <strong>Zillow</strong>
+        <strong>Apartments.com</strong>
+        <strong>Rent.com</strong>
+      </div>
+    </section>
+
+    <section class="layout">
+      <section class="panel form-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Search Setup</p>
+            <h2>Apartment preferences</h2>
+          </div>
+          <button id="saveBtn" class="ghost" type="button">Save Preferences</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span>City or ZIP</span>
+            <input id="location" placeholder="Jersey City, NJ or 07302">
+          </label>
+
+          <label>
+            <span>Max budget</span>
+            <input id="max_budget" type="number" min="500" value="2500">
+          </label>
+
+          <label>
+            <span>Minimum beds</span>
+            <input id="min_beds" type="number" min="0" value="1">
+          </label>
+
+          <label>
+            <span>Radius (miles)</span>
+            <input id="radius_miles" type="number" min="1" value="5">
+          </label>
+
+          <label>
+            <span>Daily refresh time</span>
+            <input id="daily_time" type="time" value="08:00">
+          </label>
+        </div>
+
+        <div class="sources">
+          <span class="sources-title">Preferred sites</span>
+          <label><input type="checkbox" value="zillow" checked> Zillow</label>
+          <label><input type="checkbox" value="apartments" checked> Apartments.com</label>
+          <label><input type="checkbox" value="rent" checked> Rent.com</label>
+        </div>
+
+        <div class="action-row">
+          <button id="refreshBtn" class="primary" type="button">Save & Run Now</button>
+        </div>
+
+        <p class="status" id="statusText">Waiting for apartment preferences.</p>
+      </section>
+
+      <section class="panel digest-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Latest Digest</p>
+            <h2 id="headline">No digest yet</h2>
+          </div>
+          <span class="chip" id="configChip">Config pending</span>
+        </div>
+
+        <p class="summary" id="summary">
+          Save preferences and run the first search to generate your apartment digest.
+        </p>
+
+        <div class="cards" id="cards"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const stateUrl = '/api/state';
+    const saveUrl = '/api/preferences';
+    const refreshUrl = '/api/refresh';
+
+    async function loadState() {
+      const response = await fetch(stateUrl);
+      const data = await response.json();
+      if (data.preferences) {
+        document.getElementById('location').value = data.preferences.location;
+        document.getElementById('max_budget').value = data.preferences.max_budget;
+        document.getElementById('min_beds').value = data.preferences.min_beds;
+        document.getElementById('radius_miles').value = data.preferences.radius_miles;
+        document.getElementById('daily_time').value = data.preferences.daily_time;
+        document.querySelectorAll('.sources input[type="checkbox"]').forEach((checkbox) => {
+          checkbox.checked = data.preferences.preferred_sources.includes(checkbox.value);
+        });
+      }
+      renderDigest(data.latest_digest);
+      document.getElementById('configChip').textContent = data.config.has_preferences ? 'Ready' : 'Config pending';
+    }
+
+    function collectPreferences() {
+      const preferred_sources = Array.from(document.querySelectorAll('.sources input[type="checkbox"]:checked')).map((el) => el.value);
+      return {
+        location: document.getElementById('location').value,
+        max_budget: Number(document.getElementById('max_budget').value),
+        min_beds: Number(document.getElementById('min_beds').value),
+        radius_miles: Number(document.getElementById('radius_miles').value),
+        daily_time: document.getElementById('daily_time').value,
+        preferred_sources
+      };
+    }
+
+    function renderDigest(digest) {
+      const headline = document.getElementById('headline');
+      const summary = document.getElementById('summary');
+      const cards = document.getElementById('cards');
+      cards.innerHTML = '';
+
+      if (!digest) {
+        headline.textContent = 'No digest yet';
+        summary.textContent = 'Save preferences and run the first search to generate your apartment digest.';
+        return;
+      }
+
+      headline.textContent = digest.headline;
+      summary.textContent = digest.summary;
+
+      digest.apartments.forEach((apartment) => {
+        const card = document.createElement('article');
+        card.className = 'listing-card';
+        card.innerHTML = `
+          <div class="listing-head">
+            <h3>${apartment.name}</h3>
+            <span>${apartment.price_text}</span>
+          </div>
+          <p class="listing-meta">${apartment.location_hint} · ${apartment.source}</p>
+          <p>${apartment.why_it_matches}</p>
+          <a href="${apartment.url}" target="_blank" rel="noreferrer">Open listing</a>
+        `;
+        cards.appendChild(card);
+      });
+    }
+
+    async function savePreferences() {
+      const payload = collectPreferences();
+      const response = await fetch(saveUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || 'Could not save preferences.');
+      }
+      document.getElementById('statusText').textContent = 'Preferences saved.';
+    }
+
+    async function refreshNow() {
+      const payload = collectPreferences();
+      document.getElementById('statusText').textContent = 'Running apartment search...';
+      await savePreferences();
+      const response = await fetch(refreshUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || 'Could not generate apartment digest.');
+      }
+      renderDigest(data);
+      document.getElementById('statusText').textContent = `Digest updated at ${new Date(data.generated_at).toLocaleString()}.`;
+      document.getElementById('configChip').textContent = 'Ready';
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      try {
+        await savePreferences();
+      } catch (error) {
+        document.getElementById('statusText').textContent = error.message;
+      }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+      try {
+        await refreshNow();
+      } catch (error) {
+        document.getElementById('statusText').textContent = error.message;
+      }
+    });
+
+    loadState();
+  </script>
+</body>
+</html>

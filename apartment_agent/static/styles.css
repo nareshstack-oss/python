@@ -1,0 +1,254 @@
+:root {
+  --bg: #f0efe8;
+  --panel: rgba(255, 251, 245, 0.86);
+  --ink: #1f1b17;
+  --muted: #6f6458;
+  --accent: #1d5c57;
+  --accent-2: #d2692d;
+  --line: rgba(94, 72, 55, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(210, 105, 45, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(29, 92, 87, 0.18), transparent 20%),
+    linear-gradient(180deg, #f7f0e2 0%, #ece2d3 100%);
+}
+
+.shell {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.hero > div {
+  border-radius: 34px;
+  padding: 28px 30px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 50px rgba(49, 34, 22, 0.1);
+}
+
+.hero h1,
+.panel h2 {
+  margin: 0;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  line-height: 0.98;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  max-width: 800px;
+}
+
+.hero-note {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  background:
+    linear-gradient(135deg, rgba(29, 92, 87, 0.96), rgba(210, 105, 45, 0.88)) !important;
+  color: #fff8ef;
+}
+
+.hero-note span {
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-note strong {
+  font-size: 1.35rem;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lede,
+.summary,
+.listing-card p,
+.status {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 24px;
+}
+
+.panel {
+  border-radius: 34px;
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 50px rgba(49, 34, 22, 0.08);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+}
+
+label span,
+.sources-title {
+  color: #7b6e62;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+input,
+button {
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid #dfcfbc;
+  background: white;
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 18px;
+}
+
+.sources label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.ghost,
+.primary {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 20px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.ghost {
+  background: #efe3d2;
+  color: #544538;
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+}
+
+.chip {
+  align-self: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #edf5f2;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cards {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.listing-card {
+  border-radius: 24px;
+  padding: 18px;
+  border: 1px solid #eadbc9;
+  background: linear-gradient(180deg, #fffdf8, #f5ead9);
+}
+
+.listing-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.listing-head h3,
+.listing-head span {
+  margin: 0;
+}
+
+.listing-head span {
+  white-space: nowrap;
+  background: #195e58;
+  color: #fff7ee;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.listing-meta {
+  margin-top: 10px;
+  font-size: 0.92rem;
+}
+
+.listing-card a {
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 960px) {
+  .hero,
+  .layout,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
